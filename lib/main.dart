@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'models/post.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,25 +41,45 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<Posts> fetchPosts() async {
+    final response =
+        await http.get('https://jsonplaceholder.typicode.com/posts');
+
+    if (response.statusCode == 200) {
+      return Posts.fromJson(<String, dynamic>{
+        'posts': jsonDecode(response.body),
+      });
+    } else {
+      throw Exception('Failed to load album');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: FutureBuilder<Posts>(
+        future: fetchPosts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.separated(
+              itemBuilder: (_, index) {
+                return ListTile(
+                  title: Text(snapshot.data.posts[index].title),
+                );
+              },
+              separatorBuilder: (_, __) => Divider(),
+              itemCount: snapshot.data.posts.length,
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+
+          // By default, show a loading spinner.
+          return CircularProgressIndicator();
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
