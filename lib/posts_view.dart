@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:doutoolbox/models/post.dart';
 import 'package:flutter/material.dart';
+
+import 'routes/route.gr.dart';
 
 class PostsView extends StatefulWidget {
   PostsView({Key key}) : super(key: key);
@@ -21,7 +24,7 @@ class _PostsViewState extends State<PostsView> {
         'posts': jsonDecode(response.body),
       });
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load');
     }
   }
 
@@ -38,6 +41,10 @@ class _PostsViewState extends State<PostsView> {
             return ListView.separated(
               itemBuilder: (_, index) {
                 return ListTile(
+                  onTap: () => ExtendedNavigator.of(context).pushNamed(
+                      Routes.commentsView,
+                      arguments: CommentsViewArguments(
+                          postId: snapshot.data.posts[index].id)),
                   title: Text(snapshot.data.posts[index].title),
                 );
               },
