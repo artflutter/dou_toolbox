@@ -1,29 +1,22 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'comment.freezed.dart';
 part 'comment.g.dart';
 
-@JsonSerializable()
-class Comments {
-  final List<Comment> comments;
-
-  Comments({this.comments});
+@freezed
+abstract class Comments with _$Comments {
+  factory Comments({List<Comment> comments}) = _Comments;
 
   factory Comments.fromJson(Map<String, dynamic> json) =>
       _$CommentsFromJson(json);
-  Map<String, dynamic> toJson() => _$CommentsToJson(this);
 }
 
-@JsonSerializable()
-class Comment {
-  final int postId;
-  final int id;
-  final String name;
-  final String email;
-  final String body;
-
-  Comment({this.postId, this.id, this.name, this.email, this.body});
+@freezed
+abstract class Comment with _$Comment {
+  factory Comment(
+      {int postId, int id, String name, String email, String body}) = _Comment;
 
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);
-  Map<String, dynamic> toJson() => _$CommentToJson(this);
 }

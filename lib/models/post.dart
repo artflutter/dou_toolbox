@@ -1,26 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
+part 'post.freezed.dart';
 part 'post.g.dart';
 
-@JsonSerializable()
-class Posts {
-  final List<Post> posts;
-
-  Posts({this.posts});
+@freezed
+abstract class Posts with _$Posts {
+  factory Posts({List<Post> posts}) = _Posts;
 
   factory Posts.fromJson(Map<String, dynamic> json) => _$PostsFromJson(json);
-  Map<String, dynamic> toJson() => _$PostsToJson(this);
 }
 
-@JsonSerializable()
-class Post {
-  final int userId;
-  final int id;
-  final String title;
-  final String body;
-
-  Post({this.userId, this.id, this.title, this.body});
+@freezed
+abstract class Post with _$Post {
+  factory Post({int userId, int id, String title, String body}) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
-  Map<String, dynamic> toJson() => _$PostToJson(this);
 }
